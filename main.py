@@ -8,27 +8,29 @@ class Graph:
         pass
 
     def add_vertex(self, vertex):
-        '''Adds a vertex to the graph. Takes the vertex name and a variable number of adjacency tuples as arguement. Each tuple consists of an 
-        adjacent vertex and cost.'''
-        pass
-        # self._graph[vertex] = {}
+        '''Adds a vertex to the graph without forming any adjacencies. Takes the vertex name as arguement.'''
+        self._graph[vertex] = {}
 
     def delete_vertex(self, vertex):
-        '''Deletes a vertex with the given name and all its incident edges.'''
+        '''Deletes a vertex and all its incident edges. Takes the vertex name as arguement.'''
         pass
 
-    def add_edge(self, vertex1, vertex2, cost):
-        pass 
+    def add_edge(self, vertex1, vertex2, weight=0):
+        '''Creates an undirected edge between two vertices. Takes the names of the vertices and the weight.'''
+        self._graph[vertex1][vertex2] = weight
+        self._graph[vertex2][vertex1] = weight
 
 
     def vertex_exists(self, vertex):
         '''Returns true if a vertex with a given name exists on the graph.'''
-        pass 
-
+        return vertex in self._graph
+    
+    def get_graph(self):
+        return self._graph 
 
 def main():
-
     map = Graph()
+    '''
     with open('adjacencies.csv', newline='') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
@@ -40,6 +42,16 @@ def main():
                 map.add_vertex(row[1])
 
             map.add_edge(row[0], row[1], row[2])
+    '''
+    map.add_vertex('A')
+    print(map.get_graph())
+    map.add_vertex('B')
+    print(map.get_graph())
+    map.add_edge('A', 'B', 10)
+    print(map.get_graph())
+    map.add_vertex('C')
+    map.add_edge('C', 'A', 11)
+    print(map.get_graph())
 
 
 if __name__ == '__main__':
