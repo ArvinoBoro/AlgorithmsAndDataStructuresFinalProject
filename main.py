@@ -13,7 +13,11 @@ class Graph:
 
     def delete_vertex(self, vertex):
         '''Deletes a vertex and all its incident edges. Takes the vertex name as arguement.'''
-        pass
+        for affected_vertex in self._graph[vertex].keys():
+            print(affected_vertex)
+            self._graph[affected_vertex].pop(vertex)
+        
+        del self._graph[vertex]
 
     def add_edge(self, vertex1, vertex2, weight=0):
         '''Creates an undirected edge between two vertices. Takes the names of the vertices and the weight.'''
@@ -30,7 +34,7 @@ class Graph:
 
 def main():
     map = Graph()
-    '''
+    
     with open('adjacencies.csv', newline='') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
@@ -42,17 +46,8 @@ def main():
                 map.add_vertex(row[1])
 
             map.add_edge(row[0], row[1], row[2])
-    '''
-    map.add_vertex('A')
+            
     print(map.get_graph())
-    map.add_vertex('B')
-    print(map.get_graph())
-    map.add_edge('A', 'B', 10)
-    print(map.get_graph())
-    map.add_vertex('C')
-    map.add_edge('C', 'A', 11)
-    print(map.get_graph())
-
 
 if __name__ == '__main__':
     main()
