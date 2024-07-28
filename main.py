@@ -8,33 +8,33 @@ class Graph:
     def best_path_search(self, source_vertex, end_vertex): 
         '''Uses Dijkstra's Algorithm to find the shortest path from a source vertex to a destination vertex.'''
         visisted_vertices = []
-        shortest_paths = {}
+        shortest_paths = {} # The key is the destination vertex. The value is the cost.
     
-        for vertex in self._graph:
-            if vertex == source_vertex:
-                shortest_paths[vertex] = [0, None]
+        for vertex in self._graph:      # Iterates through each and every vertex in the graph.
+            if vertex == source_vertex:     
+                shortest_paths[vertex] = [0, None]          # The cost to the source vertex is always 0.
             else:
-                shortest_paths[vertex] = [math.inf, None]
+                shortest_paths[vertex] = [math.inf, None]   # The cost to any other destination vertex starts off as infinity.
         print(shortest_paths, end='\n\n')
 
         def visit(vertex):
-            visisted_vertices.append(vertex)
+            visisted_vertices.append(vertex)                
             lowest_cost_path = math.inf
 
-            for neighbour in self._graph[vertex].keys():
-                if not neighbour in visisted_vertices:
-                    if self._graph[vertex][neighbour] + shortest_paths[vertex][0] < shortest_paths[neighbour][0]:
-                        shortest_paths[neighbour][0] = self._graph[vertex][neighbour] + shortest_paths[vertex][0]
-                        shortest_paths[neighbour][1] = vertex
-                    if shortest_paths[neighbour][0] < lowest_cost_path:
+            for neighbour in self._graph[vertex].keys():                # Iterates through each vertex that is adjacent to the currently visisted vertex.
+                if not neighbour in visisted_vertices:                  # Checks if the neighbouring vertex was already visisted.
+                    if self._graph[vertex][neighbour] + shortest_paths[vertex][0] < shortest_paths[neighbour][0]:       # Checks if the path to the neighbouring vertex has a lower cost than the current cost in lowest_cost_path.
+                        shortest_paths[neighbour][0] = self._graph[vertex][neighbour] + shortest_paths[vertex][0]       # Sets the current lowest cost path to the neighbouring vertex as the sum of the total path cost to the currently visisted vertex and the path cost between the currently visisted vertex and neighbouring vertex.
+                        shortest_paths[neighbour][1] = vertex       # Makes the previous vertex for the shortest path to the neighbouring vertex the currently visisted vertex.
+                    if shortest_paths[neighbour][0] < lowest_cost_path:     # Checks if the cost from the currently visisted vertex to the neighbour is the lowest among all iterated neighbours.
                         lowest_cost_path = shortest_paths[neighbour][0]
-                        next_neighbour = neighbour 
+                        next_neighbour = neighbour      # The next vertex to be visisted has the lowest cost from the currently visisted vertex.
 
+            
             print(shortest_paths, end='\n\n')
             
-            
-            if len(visisted_vertices) < len(self._graph):
-                visit(next_neighbour)
+            if len(visisted_vertices) < len(self._graph):       # Checks if all vertices in the graph have been visisted.   
+                visit(next_neighbour)       # Recursively visits the next neighbour.
   
         visit(source_vertex)
 
