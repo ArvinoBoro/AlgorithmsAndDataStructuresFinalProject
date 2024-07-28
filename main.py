@@ -30,8 +30,8 @@ class Graph:
                         lowest_cost_path = shortest_paths[neighbour][0]
                         next_neighbour = neighbour 
 
-            
             print(shortest_paths, end='\n\n')
+            
             
             if len(visisted_vertices) < len(self._graph):
                 visit(next_neighbour)
