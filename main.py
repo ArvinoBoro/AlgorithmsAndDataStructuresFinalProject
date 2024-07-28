@@ -82,7 +82,7 @@ def main():
 
             map.add_edge(row[0], row[1], int(row[2]))
     
-    map.best_path_search('E', 'A')
+    map.best_path_search('A', 'A')
 
 if __name__ == '__main__':
     main()
