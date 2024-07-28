@@ -1,11 +1,43 @@
 import csv 
+import queue
+import math
 class Graph: 
     def __init__(self):
         self._graph = {}
 
-    def best_path_search(start_vertex, end_vertex): 
+    def best_path_search(self, source_vertex, end_vertex): 
         '''Uses Dijkstra's Algorithm to find the shortest path from a source vertex to a destination vertex.'''
-        pass
+        visisted_vertices = []
+        shortest_paths = {}
+    
+        for vertex in self._graph:
+            if vertex == source_vertex:
+                shortest_paths[vertex] = [0, None]
+            else:
+                shortest_paths[vertex] = [math.inf, None]
+        print(shortest_paths, end='\n\n')
+
+        def visit(vertex):
+            visisted_vertices.append(vertex)
+            lowest_cost_path = math.inf
+
+            for neighbour in self._graph[vertex].keys():
+                if not neighbour in visisted_vertices:
+                    if self._graph[vertex][neighbour] + shortest_paths[vertex][0] < shortest_paths[neighbour][0]:
+                        shortest_paths[neighbour][0] = self._graph[vertex][neighbour] + shortest_paths[vertex][0]
+                        shortest_paths[neighbour][1] = vertex
+                    if shortest_paths[neighbour][0] < lowest_cost_path:
+                        lowest_cost_path = shortest_paths[neighbour][0]
+                        next_neighbour = neighbour 
+
+            
+            print(shortest_paths, end='\n\n')
+            
+            if len(visisted_vertices) < len(self._graph):
+                visit(next_neighbour)
+  
+        visit(source_vertex)
+
 
     def add_vertex(self, vertex):
         '''Adds a vertex to the graph without forming any adjacencies. Takes the vertex name as arguement.'''
@@ -31,6 +63,9 @@ class Graph:
     
     def get_graph(self):
         return self._graph 
+    
+    def vertex_count(self):
+        return len(self._graph)
 
 def main():
     map = Graph()
@@ -45,9 +80,9 @@ def main():
             if not map.vertex_exists(row[1]):
                 map.add_vertex(row[1])
 
-            map.add_edge(row[0], row[1], row[2])
-            
-    print(map.get_graph())
+            map.add_edge(row[0], row[1], int(row[2]))
+    
+    map.best_path_search('E', 'A')
 
 if __name__ == '__main__':
     main()
