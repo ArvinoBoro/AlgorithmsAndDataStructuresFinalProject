@@ -70,10 +70,20 @@ class Graph:
     
     def vertex_count(self):
         return len(self._graph)
+    
+def get_input():
+    while True:
+        user_input = input("Enter a node (every letter except 'x', 'y', 'z'): ").upper()
+        
+        if len(user_input) == 1 and user_input.isalpha() and user_input not in ['X', 'Y', 'Z']:
+            return user_input
+        else:
+            print("Invalid input. Please enter a single letter that is not 'x', 'y', or 'z'.")
+
 
 def main():
     map = Graph()
-    
+
     with open('adjacencies.csv', newline='') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
@@ -85,13 +95,16 @@ def main():
                 map.add_vertex(row[1])
 
             map.add_edge(row[0], row[1], int(row[2]))
+            
     ends = ['H', 'K', 'Q', 'T']
     i=0
+    start = get_input()
+    
     for x in ends:
-        end_vertex, path, total_cost = map.best_path_search('A', ends[i])
-        print(f"End Node: {end_vertex}")
+        end_vertex, path, total_cost = map.best_path_search(start, ends[i])
+        print(f"\nEnd Node: {end_vertex}")
         print(f"Total Cost: {total_cost}")
-        print(f"Path: {' -> ' .join(path)}\n")
+        print(f"Path: {' -> ' .join(path)}")
         i+=1
 
     #print(map.get_graph())
