@@ -29,7 +29,21 @@ class Graph:
                             lowest_costs[neighbour][1] = current_vertex     # Assigns the previous vertex of the neighbour's lowest cost path to the currently visisted vertex.
                             heapq.heappush(priority_queue, (new_cost, neighbour))   # Pushes the neighbour with its new cost to the priority queue, heapifying as well.
 
-        print(lowest_costs, end='\n\n')
+        #print(lowest_costs, end='\n\n')
+
+        # Extract the path from the source node to end node
+        path = []
+        current_vertex = end_vertex
+        while current_vertex is not None:
+            path.append(current_vertex)
+            current_vertex = lowest_costs[current_vertex][1]
+        path.reverse()
+
+        # Outputs the end node, total cost and the path
+        total_cost = lowest_costs[end_vertex][0]
+        print(f"End Node: {end_vertex}")
+        print(f"Total Cost: {total_cost}")
+        print(f"Path: {' -> ' .join(path)}\n")  
 
     def add_vertex(self, vertex):
         '''Adds a vertex to the graph without forming any adjacencies. Takes the vertex name as arguement.'''
@@ -74,7 +88,11 @@ def main():
 
             map.add_edge(row[0], row[1], int(row[2]))
     
-    map.best_path_search('S', 'D')
+    map.best_path_search('A', 'H')
+    map.best_path_search('A', 'K')
+    map.best_path_search('A', 'Q')
+    map.best_path_search('A', 'T')
+    
     #print(map.get_graph())
 
 if __name__ == '__main__':
