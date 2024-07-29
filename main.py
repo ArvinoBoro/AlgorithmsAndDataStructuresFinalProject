@@ -41,9 +41,7 @@ class Graph:
 
         # Outputs the end node, total cost and the path
         total_cost = lowest_costs[end_vertex][0]
-        print(f"End Node: {end_vertex}")
-        print(f"Total Cost: {total_cost}")
-        print(f"Path: {' -> ' .join(path)}\n")  
+        return (end_vertex, path, total_cost) 
 
     def add_vertex(self, vertex):
         '''Adds a vertex to the graph without forming any adjacencies. Takes the vertex name as arguement.'''
@@ -87,12 +85,15 @@ def main():
                 map.add_vertex(row[1])
 
             map.add_edge(row[0], row[1], int(row[2]))
-    
-    map.best_path_search('A', 'H')
-    map.best_path_search('A', 'K')
-    map.best_path_search('A', 'Q')
-    map.best_path_search('A', 'T')
-    
+    ends = ['H', 'K', 'Q', 'T']
+    i=0
+    for x in ends:
+        end_vertex, path, total_cost = map.best_path_search('A', ends[i])
+        print(f"End Node: {end_vertex}")
+        print(f"Total Cost: {total_cost}")
+        print(f"Path: {' -> ' .join(path)}\n")
+        i+=1
+
     #print(map.get_graph())
 
 if __name__ == '__main__':
