@@ -1,5 +1,5 @@
 import csv 
-import queue
+import heapq
 import math
 class Graph: 
     def __init__(self):
@@ -7,37 +7,29 @@ class Graph:
 
     def best_path_search(self, source_vertex, end_vertex): 
         '''Uses Dijkstra's Algorithm to find the shortest path from a source vertex to a destination vertex.'''
-        visisted_vertices = []
-        shortest_paths = {} # The key is the destination vertex. The value is the cost.
-    
-        for vertex in self._graph:      # Iterates through each and every vertex in the graph.
-            if vertex == source_vertex:     
-                shortest_paths[vertex] = [0, None]          # The cost to the source vertex is always 0.
-            else:
-                shortest_paths[vertex] = [math.inf, None]   # The cost to any other destination vertex starts off as infinity.
-        print(shortest_paths, end='\n\n')
+        visited_vertices = set() 
+        lowest_costs = {vertex: [math.inf, None] for vertex in self._graph} 
+        lowest_costs[source_vertex] = [0, None]
 
-        def visit(vertex):
-            visisted_vertices.append(vertex)                
-            lowest_cost_path = math.inf
+        priority_queue = []
+        heapq.heapify(priority_queue)   # Initializes a minheap priority queue.
+        heapq.heappush(priority_queue, (0, source_vertex))  # Pushes the source vertex and its path cost to the priority queue.
 
-            for neighbour in self._graph[vertex].keys():                # Iterates through each vertex that is adjacent to the currently visisted vertex.
-                if not neighbour in visisted_vertices:                  # Checks if the neighbouring vertex was already visisted.
-                    if self._graph[vertex][neighbour] + shortest_paths[vertex][0] < shortest_paths[neighbour][0]:       # Checks if the path to the neighbouring vertex has a lower cost than the current cost in lowest_cost_path.
-                        shortest_paths[neighbour][0] = self._graph[vertex][neighbour] + shortest_paths[vertex][0]       # Sets the current lowest cost path to the neighbouring vertex as the sum of the total path cost to the currently visisted vertex and the path cost between the currently visisted vertex and neighbouring vertex.
-                        shortest_paths[neighbour][1] = vertex       # Makes the previous vertex for the shortest path to the neighbouring vertex the currently visisted vertex.
-                    if shortest_paths[neighbour][0] < lowest_cost_path:     # Checks if the cost from the currently visisted vertex to the neighbour is the lowest among all iterated neighbours.
-                        lowest_cost_path = shortest_paths[neighbour][0]
-                        next_neighbour = neighbour      # The next vertex to be visisted has the lowest cost from the currently visisted vertex.
+        while priority_queue:
+            current_cost, current_vertex = heapq.heappop(priority_queue) 
 
-            
-            print(shortest_paths, end='\n\n')
-            
-            if len(visisted_vertices) < len(self._graph):       # Checks if all vertices in the graph have been visisted.   
-                visit(next_neighbour)       # Recursively visits the next neighbour.
-  
-        visit(source_vertex)
+            if not current_vertex in visited_vertices:  # Checks if the vertex at the front of the queue was already visisted.
+                visited_vertices.add(current_vertex) 
 
+                for neighbour, weight in self._graph[current_vertex].items():   # Iterates through each neighbouring vertex from the current vertex and the path weight to the neighbour.
+                    if neighbour not in visited_vertices:
+                        new_cost = current_cost + weight        
+                        if new_cost < lowest_costs[neighbour][0]:   # Checks if the path to the neighbouring vertex has a lower cost than the current cost in shortest_paths
+                            lowest_costs[neighbour][0] = new_cost   # Assigns the lowest cost to the neighbour to the new cost.
+                            lowest_costs[neighbour][1] = current_vertex     # Assigns the previous vertex of the neighbour's lowest cost path to the currently visisted vertex.
+                            heapq.heappush(priority_queue, (new_cost, neighbour))   # Pushes the neighbour with its new cost to the priority queue, heapifying as well.
+
+        print(lowest_costs, end='\n\n')
 
     def add_vertex(self, vertex):
         '''Adds a vertex to the graph without forming any adjacencies. Takes the vertex name as arguement.'''
@@ -82,7 +74,8 @@ def main():
 
             map.add_edge(row[0], row[1], int(row[2]))
     
-    map.best_path_search('A', 'A')
+    map.best_path_search('S', 'D')
+    #print(map.get_graph())
 
 if __name__ == '__main__':
     main()
