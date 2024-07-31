@@ -8,4 +8,5 @@ Instructions on How to Run
 5. The script ends here.
 
 Other Notes
+
 graph.py covers the basic functionalities of graph data structures. We encourage you to try it out in your projects and leave feedback.
