@@ -1,89 +1,18 @@
+from graph import Graph
 import csv 
-import heapq
-import math
-class Graph: 
-    def __init__(self):
-        self._graph = {}
 
-    def best_path_search(self, source_vertex, end_vertex): 
-        '''Uses Dijkstra's Algorithm to find the shortest path from a source vertex to a destination vertex.'''
-        visited_vertices = set() 
-        lowest_costs = {vertex: [math.inf, None] for vertex in self._graph} 
-        lowest_costs[source_vertex] = [0, None]
-
-        priority_queue = []
-        heapq.heapify(priority_queue)   # Initializes a minheap priority queue.
-        heapq.heappush(priority_queue, (0, source_vertex))  # Pushes the source vertex and its path cost to the priority queue.
-
-        while priority_queue:
-            current_cost, current_vertex = heapq.heappop(priority_queue) 
-
-            if not current_vertex in visited_vertices:  # Checks if the vertex at the front of the queue was already visisted.
-                visited_vertices.add(current_vertex) 
-
-                for neighbour, weight in self._graph[current_vertex].items():   # Iterates through each neighbouring vertex from the current vertex and the path weight to the neighbour.
-                    if neighbour not in visited_vertices:
-                        new_cost = current_cost + weight        
-                        if new_cost < lowest_costs[neighbour][0]:   # Checks if the path to the neighbouring vertex has a lower cost than the current cost in shortest_paths
-                            lowest_costs[neighbour][0] = new_cost   # Assigns the lowest cost to the neighbour to the new cost.
-                            lowest_costs[neighbour][1] = current_vertex     # Assigns the previous vertex of the neighbour's lowest cost path to the currently visisted vertex.
-                            heapq.heappush(priority_queue, (new_cost, neighbour))   # Pushes the neighbour with its new cost to the priority queue, heapifying as well.
-
-        #print(lowest_costs, end='\n\n')
-
-        # Extract the path from the source node to end node
-        path = []
-        current_vertex = end_vertex
-        while current_vertex is not None:
-            path.append(current_vertex)
-            current_vertex = lowest_costs[current_vertex][1]
-        path.reverse()
-
-        # Outputs the end node, total cost and the path
-        total_cost = lowest_costs[end_vertex][0]
-        return (end_vertex, path, total_cost) 
-
-    def add_vertex(self, vertex):
-        '''Adds a vertex to the graph without forming any adjacencies. Takes the vertex name as arguement.'''
-        self._graph[vertex] = {}
-
-    def delete_vertex(self, vertex):
-        '''Deletes a vertex and all its incident edges. Takes the vertex name as arguement.'''
-        for affected_vertex in self._graph[vertex].keys():
-            print(affected_vertex)
-            self._graph[affected_vertex].pop(vertex)
-        
-        del self._graph[vertex]
-
-    def add_edge(self, vertex1, vertex2, weight=0):
-        '''Creates an undirected edge between two vertices. Takes the names of the vertices and the weight.'''
-        self._graph[vertex1][vertex2] = weight
-        self._graph[vertex2][vertex1] = weight
-
-
-    def vertex_exists(self, vertex):
-        '''Returns true if a vertex with a given name exists on the graph.'''
-        return vertex in self._graph
-    
-    def get_graph(self):
-        return self._graph 
-    
-    def vertex_count(self):
-        return len(self._graph)
-    
 def get_input():
     while True:
-        user_input = input("Enter a node (every letter except 'x', 'y', 'z'): ").upper()
-        
+        user_input = input("Enter a starting point (every letter except 'x', 'y', 'z'): ").upper()
+
         if len(user_input) == 1 and user_input.isalpha() and user_input not in ['X', 'Y', 'Z']:
             return user_input
         else:
-            print("Invalid input. Please enter a single letter that is not 'x', 'y', or 'z'.")
-
+            print("Error: Input must be a single letter, excluding 'x', 'y', and 'z'.")
 
 def main():
     map = Graph()
-
+    
     with open('adjacencies.csv', newline='') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
 
@@ -95,19 +24,15 @@ def main():
                 map.add_vertex(row[1])
 
             map.add_edge(row[0], row[1], int(row[2]))
-            
-    ends = ['H', 'K', 'Q', 'T']
-    i=0
-    start = get_input()
-    
-    for x in ends:
-        end_vertex, path, total_cost = map.best_path_search(start, ends[i])
-        print(f"\nEnd Node: {end_vertex}")
-        print(f"Total Cost: {total_cost}")
-        print(f"Path: {' -> ' .join(path)}")
-        i+=1
 
-    #print(map.get_graph())
+    starting_point = get_input()
+    end_points = ['H', 'K', 'Q', 'T']
+
+    for end_point in end_points:
+        path, shortest_path_cost = map.best_path_search(starting_point, end_point)
+        print(f"End Point: {end_point}")
+        print(f"Shortest Path Cost: {shortest_path_cost}")
+        print(f"Path: {' -> ' .join(path)}\n")
 
 if __name__ == '__main__':
     main()
