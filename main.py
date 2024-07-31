@@ -30,9 +30,9 @@ def main():
 
     for end_point in end_points:
         path, shortest_path_cost = map.best_path_search(starting_point, end_point)
-        print(f"End Point: {end_point}")
+        print(f"\nEnd Point: {end_point}")
         print(f"Shortest Path Cost: {shortest_path_cost}")
-        print(f"Path: {' -> ' .join(path)}\n")
+        print(f"Path: {' -> ' .join(path)}")
 
 if __name__ == '__main__':
     main()
