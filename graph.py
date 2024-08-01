@@ -1,5 +1,6 @@
 import heapq
 import math
+import time 
 
 class Graph: 
     def __init__(self):
@@ -9,7 +10,7 @@ class Graph:
         '''Uses Dijkstra's Algorithm to find the lowest path weight from a source vertex to a destination vertex. Takes the source vertex name and destination vertex name as arguement.
         Returns the path as a list, and the cumulative path weight.'''
         # Note: neighbour is the term used for adjacent vertex.
-        if not (self.vertex_exists(source_vertex) and self.vertex_exists(end_vertex)):
+        if not (self.vertex_exists(source_vertex) and self.vertex_exists(end_vertex)): 
             print("Error: The source and end vertices do not exist.")
             return None
         
@@ -17,17 +18,18 @@ class Graph:
             print("Error: The source vertex does not exist.")
             return None
 
-        if not self.vertex_exists(end_vertex):
+        if not self.vertex_exists(end_vertex): 
             print("Error: The end vertex does not exist.")
             return None
-
-        visited_vertices = set() 
-        lowest_path_weights = {vertex: [math.inf, None] for vertex in self._graph} 
-        lowest_path_weights[source_vertex] = [0, None]
+        
+        start = time.time() 
+        visited_vertices = set()  # Dijkstra's algorithm starts here.
+        lowest_path_weights = {vertex: [math.inf, None] for vertex in self._graph}  
+        lowest_path_weights[source_vertex] = [0, None] 
 
         priority_queue = []
-        heapq.heapify(priority_queue)   # Initializes a minheap priority queue.
-        heapq.heappush(priority_queue, (0, source_vertex))  # Pushes the source vertex and its path weight of 0 to the priority queue.
+        heapq.heapify(priority_queue)   # Initializes a minheap priority queue. 
+        heapq.heappush(priority_queue, (0, source_vertex))  # Pushes the source vertex and its path weight of 0 to the priority queue. # O(1)
 
         while priority_queue:
             current_weight, current_vertex = heapq.heappop(priority_queue) 
@@ -41,8 +43,10 @@ class Graph:
                         if new_weight < lowest_path_weights[neighbour][0]:   # Checks if the path to the neighbouring vertex has a lower weight than the weight already in lowest_path_weights.
                             lowest_path_weights[neighbour][0] = new_weight   # Assigns the lower path weight to the lowest_path_weights entry for the neighbour.
                             lowest_path_weights[neighbour][1] = current_vertex     # Assigns the previous vertex of the neighbour's lowest weighing path to the currently visisted vertex.
-                            heapq.heappush(priority_queue, (new_weight, neighbour))   # Pushes the neighbour with its new cost to the priority queue, heapifying as well.
-
+                            heapq.heappush(priority_queue, (new_weight, neighbour))   # Pushes the neighbour with its new cost to the priority queue, heapifying as well. O(log V)
+        # Dijkstra's algorithm ends here.
+        end = time.time()
+        print(f"Runtime of Dijkstra's Algorithm: {end - start} s") 
         path = []
         current_vertex = end_vertex
         while current_vertex is not None:
@@ -62,13 +66,13 @@ class Graph:
 
     def delete_vertex(self, vertex):
         '''Deletes a vertex and all its incident edges. Takes the vertex name as arguement.'''
-        if self.vertex_exists(vertex):
+        if self.vertex_exists(vertex): 
             print("Error: The vertex does not exist.")
             return None
         for affected_vertex in self._graph[vertex].keys():
             print(affected_vertex)
-            self._graph[affected_vertex].pop(vertex)
-        del self._graph[vertex]
+            self._graph[affected_vertex].pop(vertex) 
+        del self._graph[vertex] 
 
     def add_edge(self, vertex1, vertex2, weight=0):
         '''Creates an undirected edge between two vertices. Takes the names of the vertices and the weight.'''
@@ -83,8 +87,8 @@ class Graph:
         if not self.vertex_exists(vertex2):
             print("Error: The second vertex does not exist.")
             return None
-        self._graph[vertex1][vertex2] = weight
-        self._graph[vertex2][vertex1] = weight
+        self._graph[vertex1][vertex2] = weight 
+        self._graph[vertex2][vertex1] = weight  
 
 
     def vertex_exists(self, vertex):
